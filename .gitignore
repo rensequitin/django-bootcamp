@@ -1,0 +1,3 @@
+*.pyc
+forum/forum/__pycache__
+forum/post/__pycache__
