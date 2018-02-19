@@ -12,3 +12,6 @@ class Comment(models.Model):
     author = models.ForeignKey(Author, models.SET_NULL, blank=True,null=True)
     post = models.ForeignKey(Post, on_delete = models.CASCADE)
     comment = models.CharField(max_length=600)
+
+    def __str__(self):
+        return self.comment
