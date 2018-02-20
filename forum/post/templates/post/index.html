@@ -1,8 +1,18 @@
 {% if all_post %}
     <ul>
     {% for post in all_post %}
-        <li>{{ post.title }} - {{post.author.name}}</li>
-        <li>Comments{{ post.comment_set.all }}</li>
+        <h2>"{{ post.title }}" - {{post.author.name}}</h2>
+        <h4 style="line-height:1px;"> Comments </h4>
+        {% for comment in post.comment_set.all %}
+            <li style="margin-left:15px;">{{ comment.comment }}</li>
+        {% endfor %}
+
+        <form action="{% url 'post:favorite' post.id%}" method="POST">
+            {% csrf_token %}
+          	<input type="textarea" autocomplete="off" name="reply">
+         		<input type="submit" value="Add comment" name="">
+       	</form>
+
     {% endfor %}
     </ul>
 {% else %}
