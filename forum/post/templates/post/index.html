@@ -4,7 +4,13 @@
         <h2>"{{ post.title }}" - {{post.author.name}}</h2>
         <h4 style="line-height:1px;"> Comments </h4>
         {% for comment in post.comment_set.all %}
-            <li style="margin-left:15px;">{{ comment.comment }}</li>
+            <li style="margin-left:15px;">{{ comment.comment }} -
+                {% if comment.author %}
+                  {{ comment.author }}
+                {% else %}
+                  Anonymous
+                {% endif %}
+            </li>
         {% endfor %}
 
         <form action="{% url 'post:favorite' post.id%}" method="POST">
