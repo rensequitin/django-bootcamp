@@ -15,6 +15,11 @@
 
         <form action="{% url 'post:favorite' post.id%}" method="POST">
             {% csrf_token %}
+            <select name="author_info">
+              {% for author in all_author %}
+              <option value="{{author.id}}">{{ author.name }}</option>
+              {% endfor %}
+            </select>
           	<input type="textarea" autocomplete="off" name="reply">
          		<input type="submit" value="Add comment" name="">
        	</form>
