@@ -1,3 +1,15 @@
+{% load staticfiles %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}" />
+  <script type="text/javascript">
+      function updateComment(comment,comment_id){
+          document.getElementById("form").style.display = "block";
+          document.getElementById("edit-reply").value = comment;
+          document.getElementById("reply-id").value = comment_id;
+          document.getElementById("edit-reply").select();
+      }
+  </script>
+</head>
 {% if all_post %}
     <ul>
     {% for post in all_post %}
@@ -7,10 +19,13 @@
             <li style="margin-left:15px;">{{ comment.comment }} -
                 {% if comment.author %}
                   {{ comment.author }}
+
                 {% else %}
                   Anonymous
                 {% endif %}
+                <input type="button" onclick="updateComment('{{comment.comment}}','{{comment.id}}');" value="Edit"/>
             </li>
+
         {% endfor %}
 
         <form action="{% url 'post:favorite' post.id%}" method="POST">
@@ -24,8 +39,21 @@
          		<input type="submit" value="Add comment" name="">
        	</form>
 
+        <!-- position:absolute; top:150px; left:300px;  -->
+        <form id="form" style="display:none;" action="{% url 'post:update'%}" method="POST">
+            {% csrf_token %}
+            <input type="textarea" hidden autocomplete="off" id="reply-id" name="reply-id">
+            <input type="textarea" autocomplete="off" id="edit-reply" name="edit-reply">
+            <input type="submit" value="Update" name="">
+        </form>
+
     {% endfor %}
     </ul>
+
+    <div id="pic">
+
+    </div>
+    <img width="460" src="{% static 'images/cat.jpg' %}"/>
 {% else %}
     <p>No posts are available.</p>
 {% endif %}
