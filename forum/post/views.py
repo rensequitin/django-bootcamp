@@ -1,17 +1,20 @@
 from django.shortcuts import render, reverse
-from django.http import HttpResponse, HttpResponseRedirect
-from django.template import loader
+from django.http import HttpResponseRedirect #HttpResponse
+# from django.template import loader
 from .models import Post, Author, Comment
 
 def index(request):
     return showAllPosts(request)
 
 def showAllPosts(request):
-    template = loader.get_template('post/index.html')
+    # template = loader.get_template('post/index.html')
     all_post = Post.objects.all
     all_author = Author.objects.all
-    context = { 'all_post' : all_post, 'all_author' : all_author,}
-    return HttpResponse(template.render(context, request))
+    all_comment = Comment.objects.all
+    active_comment = Comment.objects.filter(is_active=True)
+    context = { 'all_post' : all_post, 'all_author' : all_author, 'active_comment' : active_comment,}
+    # return HttpResponse(template.render(context, request))
+    return render(request, "post/index.html", context)
 
 def favorite(request, post_id):
 
@@ -26,11 +29,22 @@ def favorite(request, post_id):
     return HttpResponseRedirect(reverse('post:index'))
 
 def update(request):
-    if 'number' not in request.POST:
+    if 'reply-id' not in request.POST:
         return HttpResponseRedirect(reverse('post:index'))
 
     comment_id = request.POST['reply-id']
     comment = Comment.objects.get(pk=comment_id)
     comment.comment = request.POST['edit-reply']
     comment.save()
+    return HttpResponseRedirect(reverse('post:index'))
+
+def delete(request):
+    if 'reply-pk' not in request.POST:
+        return HttpResponseRedirect(reverse('post:index'))
+
+    comment_id = request.POST['reply-pk']
+    comment = Comment.objects.get(pk=comment_id)
+    comment.is_active = False
+    comment.save()
+    # comment.delete()
     return HttpResponseRedirect(reverse('post:index'))

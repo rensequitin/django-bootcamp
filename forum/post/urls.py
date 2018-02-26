@@ -11,4 +11,5 @@ urlpatterns = [
     path('',views.index, name ='index'),
     path('<post_id>/favorite/', views.favorite, name='favorite'),
     path('update/', views.update, name='update'),
+    path('delete/', views.delete, name='delete'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

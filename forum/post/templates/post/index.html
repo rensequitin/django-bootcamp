@@ -3,10 +3,14 @@
   <link rel="stylesheet" type="text/css" href="{% static 'post/style.css' %}" />
   <script type="text/javascript">
       function updateComment(comment,comment_id){
-          document.getElementById("form").style.display = "block";
+          document.getElementById("form1").style.display = "block";
           document.getElementById("edit-reply").value = comment;
           document.getElementById("reply-id").value = comment_id;
           document.getElementById("edit-reply").select();
+      }
+      function deleteComment(comment,comment_id){
+          document.getElementById("form2").style.display = "block";
+          document.getElementById("reply-pk").value = comment_id;
       }
   </script>
 </head>
@@ -15,7 +19,8 @@
     {% for post in all_post %}
         <h2>"{{ post.title }}" - {{post.author.name}}</h2>
         <h4 style="line-height:1px;"> Comments </h4>
-        {% for comment in post.comment_set.all %}
+        {% for comment in active_comment %}
+         <!-- post.comment_set.all -->
             <li style="margin-left:15px;">{{ comment.comment }} -
                 {% if comment.author %}
                   {{ comment.author }}
@@ -24,8 +29,8 @@
                   Anonymous
                 {% endif %}
                 <input type="button" onclick="updateComment('{{comment.comment}}','{{comment.id}}');" value="Edit"/>
+                <input type="button" onclick="deleteComment('{{comment.comment}}','{{comment.id}}');" value="Delete"/>
             </li>
-
         {% endfor %}
 
         <form action="{% url 'post:favorite' post.id%}" method="POST">
@@ -39,12 +44,19 @@
          		<input type="submit" value="Add comment" name="">
        	</form>
 
-        <!-- position:absolute; top:150px; left:300px;  -->
-        <form id="form" style="display:none;" action="{% url 'post:update'%}" method="POST">
+        <form id="form1" style="display:none;" action="{% url 'post:update'%}" method="POST">
             {% csrf_token %}
             <input type="textarea" hidden autocomplete="off" id="reply-id" name="reply-id">
             <input type="textarea" autocomplete="off" id="edit-reply" name="edit-reply">
             <input type="submit" value="Update" name="">
+        </form>
+
+        <form id="form2" style="position:fixed; padding:10px; left:40%; top:10%; border:groove 1px gray; display:none;" action="{% url 'post:delete'%}" method="POST">
+            {% csrf_token %}
+            <h5>Are you sure you want to delete?</h5>
+            <input type="textarea" hidden autocomplete="off" id="reply-pk" name="reply-pk">
+            <input type="submit" style="position:relative; margin-left:30px;" value="Confirm" name="">
+            <input type="button" onclick="this.parentElement.style.display ='none'" value="Cancel" name="">
         </form>
 
     {% endfor %}
